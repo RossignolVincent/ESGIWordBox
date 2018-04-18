@@ -10,7 +10,7 @@ The project is composed by multiple components :
 
 * **1 Arduino card** ESP8266 hosting a WiFi network with a web server
 * **1 accelerometer** MPU6050 to detect movements
-* **1 amplifier** PAM8403 and 1 speaker Dual Cone to broadcast the sound
+* **1 amplifier** PAM8403 and **1 speaker** Dual Cone to broadcast the sound
 
 ## Dependencies
 
