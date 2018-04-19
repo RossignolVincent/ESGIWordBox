@@ -1,15 +1,19 @@
-#include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
-#include <FS.h>   // Include the SPIFFS library
 #include <MPU6050_tockn.h>
 #include <Wire.h>
-// Audio imports
+#include <Arduino.h>
+#ifdef ESP32
+  #include <WiFi.h>
+  #include "SPIFFS.h"
+#else
+  #include <ESP8266WiFi.h>
+#endif
 #include "AudioFileSourceSPIFFS.h"
-#include "AudioFileSourceHTTPStream.h"
+#include "AudioFileSourceID3.h"
 #include "AudioGeneratorMP3.h"
-#include "AudioFileSourceBuffer.h"
 #include "AudioOutputI2SNoDAC.h"
+
 
 /* Set these to your desired credentials. */
 const char *ssid = "ThreeMenWithoutTeddy";
@@ -20,10 +24,8 @@ const String contentTypeAudioFile = "audio/ogg";
 
 /* Sound parameters */
 bool speak = false;
-bool mustPlay = false;
+// bool mustPlay = false;
 
-int vcc = D5;
-int gnd = D6;
 int scl = D3; // working value : D3
 int sda = D4; // working value : D4
 
@@ -31,11 +33,10 @@ ESP8266WebServer server(80);
 File fsUploadFile;
 MPU6050 mpu6050(Wire);
 
-AudioGeneratorMP3 *mp3;
+AudioGeneratorMP3 *mp3 = NULL;
 AudioFileSourceSPIFFS *file;
-AudioFileSourceBuffer *buff;
 AudioOutputI2SNoDAC *out;
-int led_value = HIGH;
+AudioFileSourceID3 *id3;
 
 String rootHTML = "\
   <!doctype html>\n\
@@ -171,8 +172,6 @@ void ifExists() {
 }
 
 void manageAccelero() {
-  // digitalWrite(D5, HIGH);
-  // digitalWrite(D6, LOW);
   mpu6050.update();
   
   float currentZ = mpu6050.getAccZ();
@@ -183,13 +182,20 @@ void manageAccelero() {
     speak = true;
   } else if (currentZ > 0.5 && speak) {
     speak = false;
-    // Serial.print("SPEAK");
+    Serial.println("SPEAK");
     // digitalWrite(LED_BUILTIN, HIGH);
 
     // TODO: start play audio file
+    file = new AudioFileSourceSPIFFS("/test.mp3");
+    id3 = new AudioFileSourceID3(file);
+    id3->RegisterMetadataCB(MDCallback, (void*)"ID3TAG");
+    out = new AudioOutputI2SNoDAC();
+    mp3 = new AudioGeneratorMP3();
+    mp3->begin(id3, out);
   }
 }
 
+/*
 void manageAudioPlayer() {
   if (mustPlay && mp3->isRunning()) {
     if (!mp3->loop()) {
@@ -201,42 +207,65 @@ void manageAudioPlayer() {
     // Serial.println("MP3 done\n");
   }
 }
+*/
 
 void setupAccelero() {
   //Serial.println("Wire configuration...");
   Wire.begin(scl, sda);
-
-  // pinMode(D5, OUTPUT); // D0 VCC
-  // pinMode(D6, OUTPUT); // D5 GND
   
   mpu6050 = MPU6050(Wire);
   mpu6050.begin();
 }
 
-void handlePlayer() {
-  file = new AudioFileSourceSPIFFS();
-  String message = "coucou from handle player open ";
+// Called when a metadata event occurs (i.e. an ID3 tag, an ICY block, etc.
+void MDCallback(void *cbData, const char *type, bool isUnicode, const char *string)
+{
+  (void)cbData;
+  Serial.printf("ID3 callback for: %s = '", type);
 
-  if (file->open("/test.mp3")) {
-    out = new AudioOutputI2SNoDAC();
-    mp3 = new AudioGeneratorMP3();
-    mp3->begin(file, out);
-    
-    mustPlay = true;
-    message += "correctly";
-  } else {
-    message += "incorrectly";
+  if (isUnicode) {
+    string += 2;
   }
   
+  while (*string) {
+    char a = *(string++);
+    if (isUnicode) {
+      string++;
+    }
+    Serial.printf("%c", a);
+  }
+  Serial.printf("'\n");
+  Serial.flush();
+}
+
+void handlePlayer() {
+  String message = "coucou from handle player";
+
+/*
+  file = new AudioFileSourceSPIFFS("/test.mp3");
+  id3 = new AudioFileSourceID3(file);
+  id3->RegisterMetadataCB(MDCallback, (void*)"ID3TAG");
+  out = new AudioOutputI2SNoDAC();
+  mp3 = new AudioGeneratorMP3();
+  mp3->begin(id3, out);
+  */
+  
   server.send(200, "text/html", message);
+}
+
+void closeMp3() {
+  mp3 = NULL;
+  id3->close();
+  id3 = NULL;
+  out = NULL;
 }
 
 void setup() {
   delay(1000);
   Serial.begin(115200);
-  Serial.end();
+  //Serial.end();
 
-  // setupAccelero();
+  setupAccelero();
   
   //Serial.println();
   //Serial.print("Configuring access point...");
@@ -271,6 +300,16 @@ void setup() {
 
 void loop() {
   server.handleClient();
-  //manageAccelero();
-  manageAudioPlayer();
+  manageAccelero();
+
+  if (mp3 != NULL && mp3->isRunning()) {
+    if (!mp3->loop()) {
+      mp3->stop();
+      Serial.println("close mp3 resources");
+      closeMp3();
+    }
+  } else {
+    //Serial.printf("MP3 done\n");
+    //delay(1000);
+  }
 }
