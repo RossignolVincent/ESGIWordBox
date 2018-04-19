@@ -47,6 +47,12 @@ The project uses the following libraries :
 * **wire** to manage the connections between all the components
 * **esp8266** for the Arduino card
 
+## What we tried and what issues we faced
+
+* Mozzi : We had difficulties to work with the Mozzi library and the ESP8266. We need more time to investigate this solution. Moreover, Mozzi isn't working well with WiFi.
+* File format : Mozilla is exporting audio files in .ogg and our library is reading .mp3 files. We need to find an ogg-mp3 converter.
+* Broswer : Chrome is blocking the microphone access if the website is not in HTTPS.
+
 ## How does it work ?
 
 At the start, the Arduino card **create a WiFi network** :
