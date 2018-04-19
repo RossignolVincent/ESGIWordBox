@@ -3,6 +3,7 @@
 ## Description
 
 The word box allows you to **record words and to play it again and again when moving the box from downside to upside** (like a ["Moo box"](https://en.wikipedia.org/wiki/Moo_box)).
+
 ![alt text](https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Meuh_box.JPG/270px-Meuh_box.JPG)
 
 ## Components
@@ -15,6 +16,13 @@ The project is composed by multiple components :
 * **1 speaker** Dual Cone to broadcast the sound
 
 ## Setup environment
+
+
+### Clone project
+```sh
+https://github.com/RossignolVincent/ESGIWordBox.git
+```
+
 If you don't have arduino
   1. download it here: https://www.arduino.cc/en/main/software
   2. If you use windows/OSx you will probably need drivers: https://www.wemos.cc/downloads
