@@ -65,6 +65,8 @@ You will have to **connect to this WiFi network** and to **go to the following a
 
 On the web server, **you can record a sound**. This sound will **be played at each box movement**.
 
+![alt text](ressources/image_3.png)
+
 ![alt text](/ressources/image_1.jpg)
 
 ![alt text](ressources/image_2.jpg)
