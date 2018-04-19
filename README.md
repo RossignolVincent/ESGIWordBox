@@ -49,9 +49,10 @@ The project uses the following libraries :
 
 ## What we tried and what issues we faced
 
-* Mozzi : We had difficulties to work with the Mozzi library and the ESP8266. We need more time to investigate this solution. Moreover, Mozzi isn't working well with WiFi.
-* File format : Mozilla is exporting audio files in .ogg and our library is reading .mp3 files. We need to find an ogg-mp3 converter.
-* Broswer : Chrome is blocking the microphone access if the website is not in HTTPS.
+* **Mozzi** : We had difficulties to work with the Mozzi library and the ESP8266. We need more time to investigate this solution. Moreover, Mozzi isn't working well with WiFi.
+* **Audio file format** : Mozilla is exporting audio files in .ogg and our library is reading .mp3 files. We need to find an ogg-mp3 converter.
+* **Browser** : Chrome is blocking the microphone access if the website is not in HTTPS.
+* **ESP8266Audio** : The library is working well only with some specific MP3 caracteristics. Otherwise, it works but the sound quality isn't good.
 
 ## How does it work ?
 
