@@ -3,6 +3,7 @@
 ## Description
 
 The word box allows you to **record words and to play it again and again when moving the box from downside to upside** (like a ["Moo box"](https://en.wikipedia.org/wiki/Moo_box)).
+![alt text](https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Meuh_box.JPG/270px-Meuh_box.JPG)
 
 ## Components
 
@@ -13,14 +14,14 @@ The project is composed by multiple components :
 * **1 amplifier** PAM8403
 * **1 speaker** Dual Cone to broadcast the sound
 
-### Setup environment
+## Setup environment
 If you don't have arduino
   1. download it here: https://www.arduino.cc/en/main/software
   2. If you use windows/OSx you will probably need drivers: https://www.wemos.cc/downloads
 Start Arduino IDE
 
 
-#### Setup the board
+### Setup the board
 
 1. Open the Preferences window
 2. In the Additional Board Manager URLs field, enter this URL : http://arduino.esp8266.com/versions/2.3.0/package_esp8266com_index.json
@@ -29,7 +30,7 @@ Start Arduino IDE
 5. Select your board: `Tools` -> `Board` -> `Wemos D1 R2 & mini`
 
 
-#### Add external libraries
+### Add external libraries
 
 The project uses the following libraries :
 
