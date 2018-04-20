@@ -58,7 +58,7 @@ The project uses the following libraries :
 
 At the start, the Arduino card **create a WiFi network** :
 
-* SSID : TwoMenOnePled 
+* SSID : ThreeMenWithoutTeddy 
 * Password : Azerty1234
 
 You will have to **connect to this WiFi network** and to **go to the following address** : 192.169.4.1
